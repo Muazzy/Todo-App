@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TaskData(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.light().copyWith(
           unselectedWidgetColor: Color(0x7FFb1e5ce),
           canvasColor: Colors.transparent,

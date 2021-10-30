@@ -1,11 +1,16 @@
 import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:my_todo/models/tasks.dart';
 import 'db_helper.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class TaskData extends ChangeNotifier {
   static DBHelper dbhelper = DBHelper();
+  ImagePicker picker = ImagePicker();
+
+  File image;
 
   List<Task> _tasks = [];
 
@@ -50,4 +55,33 @@ class TaskData extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  File get getImage {
+    return image;
+  }
+
+  Future<void> onTap() async {
+    try {
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage == null) return;
+      final temporaryImage = File(pickedImage.path);
+      // final permanentImage = await saveImagePermanently(pickedImage.path);
+
+      this.image = temporaryImage;
+      notifyListeners();
+    } on PlatformException catch (e) {
+      print('error $e');
+    }
+  }
+
+  // Future<File> saveImagePermanently(String imagePath) async {
+  //   final appDocDirectory =
+  //       await PathProvider.getApplicationDocumentsDirectory();
+  //   final String appDocPath = appDocDirectory.path;
+  //   final name = Path.basename(imagePath);
+
+  //   final image = File('$appDocPath/$name');
+
+  //   return File(imagePath).copy(image.path);
+  // }
 }

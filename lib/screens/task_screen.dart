@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:my_todo/constants.dart';
 import 'package:my_todo/screens/add_task.dart';
+import 'package:my_todo/tasks_data.dart';
 import 'package:my_todo/widgets/task_list.dart';
+import 'package:provider/provider.dart';
 
 class TaskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    dynamic profileP = Provider.of<TaskData>(context).getImage;
+    dynamic img = NetworkImage('https://picsum.photos/1080/1920');
+
+    //function that provides a image
+    dynamic getImage() {
+      if (img == null) {
+        img = AssetImage('images/bg.png');
+      }
+      return img;
+    }
+    // String imgUrl = 'https://picsum.photos/1080/1920';
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0x7FFc7a8ee),
@@ -28,12 +42,11 @@ class TaskScreen extends StatelessWidget {
         //a big container that contains our bg image
         child: Container(
           decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage(
-              'images/bg.png',
+            image: DecorationImage(
+              image: getImage(),
+              fit: BoxFit.cover,
             ),
-            fit: BoxFit.cover,
-          )),
+          ),
           //inside that container there is our task list.
           child: Column(
             children: [
@@ -62,11 +75,30 @@ class TaskScreen extends StatelessWidget {
                                 fontSize: 28.0,
                               ),
                             ),
-                            CircleAvatar(
-                              radius: 23,
-                              backgroundImage:
-                                  AssetImage('images/circleAv.png'),
-                            )
+                            GestureDetector(
+                              onTap: () {
+                                Provider.of<TaskData>(context, listen: false)
+                                    .onTap();
+                              },
+                              child: CircleAvatar(
+                                radius: 23,
+                                child: ClipOval(
+                                  child: profileP != null
+                                      ? Image.file(
+                                          profileP,
+                                          width: 200,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.asset(
+                                          'images/circleAv.png',
+                                          height: 200,
+                                          width: 200,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
